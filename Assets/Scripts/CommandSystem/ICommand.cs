@@ -1,0 +1,7 @@
+﻿namespace CommandSystem
+{
+    interface ICommand
+    {
+
+    }
+}
