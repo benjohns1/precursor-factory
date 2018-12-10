@@ -30,9 +30,9 @@ namespace EventSystem
         protected void Publish(IEventData @event)
         {
             Topic topic = @event.GetTopic();
-            foreach (Callback callback in callbacks.Where(item => item.Item1 == topic).Select(item => item.Item2))
+            foreach (Callback callback in callbacks.Where(item => item.Item1.Equals(topic)).Select(item => item.Item2))
             {
-                callback.BeginInvoke(@event, null, null);
+                callback.Invoke(@event);
             }
         }
     }

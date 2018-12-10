@@ -1,7 +1,0 @@
-﻿namespace CommandSystem
-{
-    interface ICommand
-    {
-
-    }
-}

@@ -1,12 +1,21 @@
-﻿namespace EventSystem
-{
-    public class Topic
-    {
-        protected string topic;
+﻿using System.Collections.Generic;
 
-        public Topic(string topic)
+namespace EventSystem
+{
+    public class Topic : ValueObject
+    {
+        public string Name { get; protected set; }
+
+        private Topic() { }
+
+        public Topic(string topicName)
         {
-            this.topic = topic;
+            Name = topicName;
+        }
+
+        protected override IEnumerable<object> GetAtomicValues()
+        {
+            yield return Name;
         }
     }
 }
