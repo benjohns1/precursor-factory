@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace EventSystem
+namespace GameEvents
 {
     public class Topic : ValueObject
     {

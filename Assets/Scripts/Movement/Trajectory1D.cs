@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine;
 
-namespace MovementSystem
+namespace Movement
 {
     struct TrajectoryPoint
     {

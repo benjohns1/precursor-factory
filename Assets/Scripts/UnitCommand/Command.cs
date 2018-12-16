@@ -1,4 +1,4 @@
-﻿namespace CommandSystem
+﻿namespace UnitCommand
 {
     public abstract class Command
     {
