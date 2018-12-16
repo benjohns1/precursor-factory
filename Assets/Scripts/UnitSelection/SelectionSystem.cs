@@ -46,14 +46,7 @@ namespace UnitSelection
         protected void SelectActionAtPosition(Vector2 position, bool multi)
         {
             SelectableComponent selection = Physics2D.Raycast(position, Vector2.zero).transform?.gameObject.GetComponent<SelectableComponent>();
-            if (IsSelected(selection))
-            {
-                Selections.Deselect(selection, multi);
-            }
-            else
-            {
-                Selections.Select(selection, multi);
-            }
+            Selections.HandleSelection(selection, multi);
         }
     }
 }

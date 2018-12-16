@@ -1,5 +1,6 @@
 ﻿using GameEvents.UnitSelection;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace UnitSelection
 {
@@ -7,11 +8,23 @@ namespace UnitSelection
     {
         private readonly List<SelectableComponent> Selected = new List<SelectableComponent>();
 
-        public void Select(SelectableComponent selection, bool multi)
+        public void HandleSelection(SelectableComponent selection, bool multi)
+        {
+            if (IsSelected(selection) && (Selected.Count == 1 || multi))
+            {
+                Deselect(selection, multi);
+            }
+            else
+            {
+                Select(selection, multi);
+            }
+        }
+
+        private void Select(SelectableComponent selection, bool multi)
         {
             if (!multi)
             {
-                Clear();
+                Clear(Selected.Count == 1 ? selection : null);
             }
             if (selection == null)
             {
@@ -22,7 +35,7 @@ namespace UnitSelection
             GameManager.EventSystem.Publish(new UnitSelected(selection, multi ? UnitSelected.SelectionType.Multi : UnitSelected.SelectionType.Single));
         }
 
-        public void Deselect(SelectableComponent selection, bool multi)
+        private void Deselect(SelectableComponent selection, bool multi)
         {
             if (!multi)
             {
@@ -37,7 +50,7 @@ namespace UnitSelection
             }
         }
 
-        public void Clear()
+        private void Clear(SelectableComponent ignore = null)
         {
             if (Selected.Count <= 0)
             {
@@ -45,7 +58,10 @@ namespace UnitSelection
             }
             foreach (SelectableComponent selected in Selected)
             {
-                selected.Deselect();
+                if (selected != ignore)
+                {
+                    selected.Deselect();
+                }
             }
             Selected.Clear();
             GameManager.EventSystem.Publish(new UnitSelectionCleared());

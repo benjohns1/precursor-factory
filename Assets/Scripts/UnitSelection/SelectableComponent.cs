@@ -15,10 +15,12 @@ public class SelectableComponent : MonoBehaviour
     public void Select()
     {
         spriteRenderer.color = SelectColor;
+        spriteRenderer.sortingLayerName = "Selected";
     }
 
     public void Deselect()
     {
         spriteRenderer.color = OriginalColor;
+        spriteRenderer.sortingLayerName = "Deselected";
     }
 }
