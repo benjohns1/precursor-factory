@@ -3,17 +3,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using UnityEngine;
 
 namespace GameEvents
 {
     internal struct Subscription
     {
-        internal readonly Topic Topic;
+        internal readonly Type EventType;
         internal readonly EventSystem.Callback Callback;
 
-        public Subscription(Topic topic, EventSystem.Callback callback)
+        public Subscription(Type eventType, EventSystem.Callback callback)
         {
-            Topic = topic;
+            EventType = eventType;
             Callback = callback;
         }
     }

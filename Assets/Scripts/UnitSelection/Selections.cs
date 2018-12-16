@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using UserInput;
+﻿using GameEvents.UnitSelection;
+using System.Collections.Generic;
 
 namespace UnitSelection
 {
@@ -55,6 +54,11 @@ namespace UnitSelection
         public bool IsSelected(SelectableComponent selectable)
         {
             return selectable == null ? false : Selected.Contains(selectable);
+        }
+
+        public List<SelectableComponent> GetSelections()
+        {
+            return Selected;
         }
     }
 }

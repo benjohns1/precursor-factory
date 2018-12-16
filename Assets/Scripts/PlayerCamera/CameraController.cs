@@ -1,4 +1,5 @@
 ﻿using GameEvents;
+using GameEvents.Actions;
 using UnityEngine;
 
 namespace PlayerCamera
@@ -18,7 +19,7 @@ namespace PlayerCamera
 
         private void Awake()
         {
-            GameManager.EventSystem.Subscribe(new Topic("CameraPan"), HandleCameraPan);
+            GameManager.EventSystem.Subscribe(typeof(CameraPanRequested), HandleCameraPan);
             Camera = gameObject.GetComponent<Camera>();
         }
 
@@ -35,19 +36,19 @@ namespace PlayerCamera
             switch (panEvent.Dir)
             {
                 case CameraPanRequested.Direction.Up:
-                    PanUp = panEvent.Request == CameraPanRequested.RequestType.Start;
+                    PanUp = panStart;
                     PanVelocity.y += panEvent.Request == CameraPanRequested.RequestType.Start ? panSpeed : -panSpeed;
                     break;
                 case CameraPanRequested.Direction.Down:
-                    PanDown = panEvent.Request == CameraPanRequested.RequestType.Start;
+                    PanDown = panStart;
                     PanVelocity.y += panEvent.Request == CameraPanRequested.RequestType.Start ? -panSpeed : panSpeed;
                     break;
                 case CameraPanRequested.Direction.Right:
-                    PanRight = panEvent.Request == CameraPanRequested.RequestType.Start;
+                    PanRight = panStart;
                     PanVelocity.x += panEvent.Request == CameraPanRequested.RequestType.Start ? panSpeed : -panSpeed;
                     break;
                 case CameraPanRequested.Direction.Left:
-                    PanLeft = panEvent.Request == CameraPanRequested.RequestType.Start;
+                    PanLeft = panStart;
                     PanVelocity.x += panEvent.Request == CameraPanRequested.RequestType.Start ? -panSpeed : panSpeed;
                     break;
             }

@@ -1,5 +1,6 @@
-﻿using PlayerCamera;
-using GameEvents;
+﻿using GameEvents;
+using GameEvents.Actions;
+using GameEvents.UserInput;
 using System.Collections.Generic;
 using UnityEngine;
 using static UserInput.InputMappings;
@@ -28,7 +29,7 @@ namespace UserInput
         internal MapInput(InputMappings mappings)
         {
             this.mappings = mappings;
-            GameManager.EventSystem.Subscribe(new Topic("InputCapture"), HandleInputCaptured);
+            GameManager.EventSystem.Subscribe(typeof(InputCaptured), HandleInputCaptured);
         }
 
         protected void HandleInputCaptured(IEvent @event)
@@ -91,13 +92,13 @@ namespace UserInput
                     case Action.Select:
                         if (mouseEvent.Action == KeyCaptured.ActionType.Pressed)
                         {
-                            GameManager.EventSystem.Publish(new InputAction(mouseEvent.Position, MultiModifier ? InputAction.ActionType.MultiSelectAtPosition : InputAction.ActionType.SelectAtPosition));
+                            GameManager.EventSystem.Publish(new InputActionRequested(mouseEvent.Position, MultiModifier ? InputActionRequested.ActionType.MultiSelectAtPosition : InputActionRequested.ActionType.SelectAtPosition));
                         }
                         break;
                     case Action.MoveTo:
                         if (mouseEvent.Action == KeyCaptured.ActionType.Pressed)
                         {
-                            GameManager.EventSystem.Publish(new InputAction(mouseEvent.Position, MultiModifier ? InputAction.ActionType.EnqueueMoveToPosition : InputAction.ActionType.MoveToPosition));
+                            GameManager.EventSystem.Publish(new InputActionRequested(mouseEvent.Position, MultiModifier ? InputActionRequested.ActionType.EnqueueMoveToPosition : InputActionRequested.ActionType.MoveToPosition));
                         }
                         break;
                     default:

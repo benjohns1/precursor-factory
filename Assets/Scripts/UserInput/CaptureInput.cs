@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using GameEvents.UserInput;
+using UnityEngine;
 using static UserInput.InputMappings;
 
 namespace UserInput

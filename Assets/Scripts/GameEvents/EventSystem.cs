@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GameEvents
@@ -13,22 +14,21 @@ namespace GameEvents
         public void Publish(IEvent @event)
         {
             events.Add(@event);
-            Topic topic = @event.GetTopic();
-            List<Callback> subs = callbacks.Where(subscription => subscription.Topic.Equals(topic)).Select(subscription => subscription.Callback).ToList();
-            foreach (Callback callback in subs)
+            List<Callback> subCallbacks = callbacks.Where(sub => sub.EventType.IsAssignableFrom(@event.GetType())).Select(sub => sub.Callback).ToList();
+            foreach (Callback callback in subCallbacks)
             {
                 callback.Invoke(@event);
             }
         }
 
-        public void Subscribe(Topic topic, Callback callback)
+        public void Subscribe(Type type, Callback callback)
         {
-            callbacks.Add(new Subscription(topic, callback));
+            callbacks.Add(new Subscription(type, callback));
         }
 
-        public void Unsubscribe(Topic topic, Callback callback)
+        public void Unsubscribe(Type type, Callback callback)
         {
-            Subscription subscription = new Subscription(topic, callback);
+            Subscription subscription = new Subscription(type, callback);
             if (!callbacks.Contains(subscription))
             {
                 return;

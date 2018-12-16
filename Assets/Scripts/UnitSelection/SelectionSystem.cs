@@ -1,7 +1,7 @@
 ﻿using GameEvents;
+using GameEvents.Actions;
 using System.Collections.Generic;
 using UnityEngine;
-using UserInput;
 
 namespace UnitSelection
 {
@@ -11,7 +11,7 @@ namespace UnitSelection
 
         public SelectionSystem()
         {
-            GameManager.EventSystem.Subscribe(new Topic("InputAction"), HandleInputEvent);
+            GameManager.EventSystem.Subscribe(typeof(InputActionRequested), HandleInputEvent);
         }
 
         public bool IsSelected(SelectableComponent selectable)
@@ -19,20 +19,25 @@ namespace UnitSelection
             return Selections.IsSelected(selectable);
         }
 
+        public List<SelectableComponent> GetSelections()
+        {
+            return Selections.GetSelections();
+        }
+
         protected void HandleInputEvent(IEvent @event)
         {
-            if (!(@event is InputAction))
+            if (!(@event is InputActionRequested))
             {
                 return;
             }
 
-            InputAction inputEvent = @event as InputAction;
+            InputActionRequested inputEvent = @event as InputActionRequested;
             switch (inputEvent.Action)
             {
-                case InputAction.ActionType.SelectAtPosition:
+                case InputActionRequested.ActionType.SelectAtPosition:
                     SelectActionAtPosition(inputEvent.Position, false);
                     break;
-                case InputAction.ActionType.MultiSelectAtPosition:
+                case InputActionRequested.ActionType.MultiSelectAtPosition:
                     SelectActionAtPosition(inputEvent.Position, true);
                     break;
             }
