@@ -35,17 +35,15 @@ namespace UnitSelection
             switch (inputEvent.Action)
             {
                 case InputActionRequested.ActionType.SelectAtPosition:
-                    SelectActionAtPosition(inputEvent.Position, false);
-                    break;
-                case InputActionRequested.ActionType.MultiSelectAtPosition:
-                    SelectActionAtPosition(inputEvent.Position, true);
+                    SelectActionAtScreenPosition(inputEvent.Position, inputEvent.MultiModifier);
                     break;
             }
         }
 
-        protected void SelectActionAtPosition(Vector2 position, bool multi)
+        protected void SelectActionAtScreenPosition(Vector2 position, bool multi)
         {
-            SelectableComponent selection = Physics2D.Raycast(position, Vector2.zero).transform?.gameObject.GetComponent<SelectableComponent>();
+            Vector2 worldPosition = Camera.main.ScreenToWorldPoint(position);
+            SelectableComponent selection = Physics2D.Raycast(worldPosition, Vector2.zero).transform?.gameObject.GetComponent<SelectableComponent>();
             Selections.HandleSelection(selection, multi);
         }
     }

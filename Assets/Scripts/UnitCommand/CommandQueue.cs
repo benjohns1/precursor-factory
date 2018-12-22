@@ -30,12 +30,21 @@ namespace UnitCommand
             switch (inputEvent.Action)
             {
                 case InputActionRequested.ActionType.MoveToPosition:
-                    Queue.Clear();
-                    CancelCurrent();
-                    Queue.Enqueue(new MoveToPosition(this, inputEvent.Position));
+                    if (!inputEvent.MultiModifier)
+                    {
+                        Queue.Clear();
+                        CancelCurrent();
+                    }
+                    Queue.Enqueue(new MoveToPosition(this, Camera.main.ScreenToWorldPoint(inputEvent.Position)));
                     break;
-                case InputActionRequested.ActionType.EnqueueMoveToPosition:
-                    Queue.Enqueue(new MoveToPosition(this, inputEvent.Position));
+                case InputActionRequested.ActionType.Drill:
+                    if (!inputEvent.MultiModifier)
+                    {
+                        Queue.Clear();
+                        CancelCurrent();
+                    }
+                    Queue.Enqueue(new MoveToPosition(this, Camera.main.ScreenToWorldPoint(inputEvent.Position)));
+                    Queue.Enqueue(new Drill.Drill(this));
                     break;
             }
         }

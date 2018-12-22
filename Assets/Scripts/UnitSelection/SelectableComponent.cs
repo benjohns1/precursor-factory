@@ -1,9 +1,10 @@
-﻿using UnityEngine;
+﻿using UnitCommand;
+using UnityEngine;
 
 public class SelectableComponent : MonoBehaviour
 {
-    protected SpriteRenderer spriteRenderer;
     public Color SelectColor = Color.green;
+    protected SpriteRenderer spriteRenderer;
     protected Color OriginalColor;
 
     private void Awake()

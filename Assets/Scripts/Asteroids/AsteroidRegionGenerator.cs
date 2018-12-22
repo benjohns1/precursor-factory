@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AsteroidGenerator
+namespace Asteroids
 {
-    public class AsteroidDataFactory
+    public class AsteroidRegionGenerator
     {
         public class MapSettings
         {
@@ -23,9 +23,9 @@ namespace AsteroidGenerator
             public readonly int ProbabilityWeight;
             public readonly float Variability;
             public readonly float Density;
-            public readonly Dictionary<Material, int> MaterialProbabilityWeights;
+            public readonly Dictionary<Matter, int> MaterialProbabilityWeights;
 
-            public RegionSettings(int probabilityWeight, float variability, float density, Dictionary<Material, int> materialProbabilityWeights)
+            public RegionSettings(int probabilityWeight, float variability, float density, Dictionary<Matter, int> materialProbabilityWeights)
             {
                 ProbabilityWeight = probabilityWeight;
                 Variability = variability;
@@ -34,13 +34,11 @@ namespace AsteroidGenerator
             }
         }
 
-        public enum Material { Iron, Silicon }
-
-        private AsteroidDataFactory() { }
+        private AsteroidRegionGenerator() { }
 
         public readonly MapSettings Settings;
 
-        public AsteroidDataFactory(MapSettings settings)
+        public AsteroidRegionGenerator(MapSettings settings)
         {
             Settings = settings;
         }

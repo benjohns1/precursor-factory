@@ -34,7 +34,7 @@ namespace UserInput
         internal List<InputMap> MouseActions = new List<InputMap>()
         {
             new InputMap(KeyCode.Mouse0, Action.Select),
-            new InputMap(KeyCode.Mouse1, Action.MoveTo),
+            new InputMap(KeyCode.Mouse1, Action.DoAction),
         };
     }
 }

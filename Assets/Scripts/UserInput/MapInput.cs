@@ -16,7 +16,7 @@ namespace UserInput
         PanDown,
         PanLeft,
         Select,
-        MoveTo
+        DoAction
     };
 
     internal class MapInput
@@ -39,10 +39,17 @@ namespace UserInput
                 return;
             }
 
-            if (@event is MouseCaptured)
+            if (@event is MouseEventCaptured)
             {
-                MouseCaptured mouseEvent = @event as MouseCaptured;
-                MouseInput(mouseEvent);
+                MouseEventCaptured mouseEvent = @event as MouseEventCaptured;
+                if (mouseEvent.GameMouseMode)
+                {
+                    GameMouseInput(mouseEvent);
+                }
+                else
+                {
+                    GameManager.EventSystem.Publish(new GameEvents.UI.MouseEventCaptured(mouseEvent.Key, mouseEvent.Position));
+                }
                 return;
             }
 
@@ -83,7 +90,7 @@ namespace UserInput
             }
         }
 
-        protected void MouseInput(MouseCaptured mouseEvent)
+        protected void GameMouseInput(MouseEventCaptured mouseEvent)
         {
             foreach (InputMap input in mappings.MouseActions.FindAll(input => input.Key == mouseEvent.Key))
             {
@@ -92,13 +99,13 @@ namespace UserInput
                     case Action.Select:
                         if (mouseEvent.Action == KeyCaptured.ActionType.Pressed)
                         {
-                            GameManager.EventSystem.Publish(new InputActionRequested(mouseEvent.Position, MultiModifier ? InputActionRequested.ActionType.MultiSelectAtPosition : InputActionRequested.ActionType.SelectAtPosition));
+                            GameManager.EventSystem.Publish(new InputActionRequested(mouseEvent.Position, InputActionRequested.ActionType.SelectAtPosition, MultiModifier));
                         }
                         break;
-                    case Action.MoveTo:
+                    case Action.DoAction:
                         if (mouseEvent.Action == KeyCaptured.ActionType.Pressed)
                         {
-                            GameManager.EventSystem.Publish(new InputActionRequested(mouseEvent.Position, MultiModifier ? InputActionRequested.ActionType.EnqueueMoveToPosition : InputActionRequested.ActionType.MoveToPosition));
+                            GameManager.EventSystem.Publish(new InputActionRequested(mouseEvent.Position, InputActionRequested.ActionType.ChooseAction, MultiModifier));
                         }
                         break;
                     default:
