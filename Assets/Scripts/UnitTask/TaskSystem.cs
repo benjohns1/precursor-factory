@@ -2,6 +2,7 @@
 using GameEvents.Actions;
 using GameEvents.UnitSelection;
 using GameEvents.UnitTask;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,7 +15,8 @@ namespace UnitTask
 
         public TaskSystem()
         {
-            GameManager.EventSystem.Subscribe(typeof(InputActionRequested), HandleInputEvent);
+            GameManager.EventSystem.Subscribe(typeof(InputActionRequested), HandleInputActionEvent);
+            GameManager.EventSystem.Subscribe(typeof(BuildActionRequested), HandleBuildActionEvent);
             GameManager.EventSystem.Subscribe(typeof(UnitSelectionChanged), HandleSelectionEvent);
             GameManager.EventSystem.Subscribe(typeof(UnitTaskCompleted), HandleCompletedEvent);
         }
@@ -50,14 +52,25 @@ namespace UnitTask
             }
         }
 
-        private void HandleInputEvent(IEvent @event)
+        private void HandleInputActionEvent(IEvent @event)
         {
             InputActionRequested inputEvent = @event as InputActionRequested;
 
             List<SelectableComponent> selections = GameManager.SelectionSystem.GetSelections();
             foreach (TaskQueue queue in queues.Where(queue => selections.Contains(queue.SelectableComponent)))
             {
-                queue.HandleAction(inputEvent);
+                queue.ProcessInputAction(inputEvent);
+            }
+        }
+
+        private void HandleBuildActionEvent(IEvent @event)
+        {
+            BuildActionRequested buildEvent = @event as BuildActionRequested;
+
+            List<SelectableComponent> selections = GameManager.SelectionSystem.GetSelections();
+            foreach (TaskQueue queue in queues.Where(queue => selections.Contains(queue.SelectableComponent)))
+            {
+                queue.ProcessBuildAction(buildEvent);
             }
         }
 

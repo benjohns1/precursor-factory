@@ -119,4 +119,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ec7eecfe2217de46b33f400ecc8e5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CustomDisplayName: Drill
+  CustomDisplayType: Mining Facility
   SelectColor: {r: 1, g: 0, b: 0.99997807, a: 1}

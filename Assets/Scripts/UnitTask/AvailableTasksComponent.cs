@@ -1,21 +1,15 @@
 ﻿using GameEvents.Actions;
 using System.Collections.Generic;
-using System.Linq;
 using UnitTask.Manufacture;
 using UnityEngine;
 
-namespace Behavior
+namespace UnitTask
 {
-    class DroneComponent : BehaviorComponent
+    class AvailableTasksComponent : MonoBehaviour
     {
-        public string DroneName = null;
+        public TaskType[] TaskTypes = new TaskType[0];
 
-        public override string DisplayName => string.IsNullOrWhiteSpace(DroneName) ? "Drone" : DroneName;
-        public override string DisplayType => "Drone";
-
-        public override int MaxCargoVolume => 10;
-
-        public override TaskType[] GetTasks(Vector2 mousePosition)
+        public TaskType[] GetTasks(Vector2 mousePosition)
         {
             List<TaskType> tasks = new List<TaskType>();
             foreach (TaskType task in TaskTypes)

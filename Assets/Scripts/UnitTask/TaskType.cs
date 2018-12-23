@@ -1,6 +1,6 @@
 ﻿using GameEvents.Actions;
 
-namespace Behavior
+namespace UnitTask
 {
     [System.Serializable]
     class TaskType

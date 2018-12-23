@@ -14,9 +14,10 @@ GameObject:
   - component: {fileID: 114143363689851754}
   - component: {fileID: 60976933383723534}
   - component: {fileID: 114285118906091860}
-  - component: {fileID: 1585314245692915307}
   - component: {fileID: 5720193846554773453}
   - component: {fileID: 2885760156889011600}
+  - component: {fileID: 804054460703398686}
+  - component: {fileID: 6486274195425777466}
   m_Layer: 0
   m_Name: Drone
   m_TagString: Untagged
@@ -153,26 +154,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ec7eecfe2217de46b33f400ecc8e5ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SelectColor: {r: 0, g: 1, b: 0, a: 1}
---- !u!114 &1585314245692915307
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1878582747517346}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2fbfe70f9d33cfb48a4f06402796c332, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TaskTypes:
-  - Action: 3
-    DisplayName: Move to Position
-  - Action: 4
-    DisplayName: Drill
-  CargoAmounts: []
-  DroneName: 
+  CustomDisplayName: Drone
+  CustomDisplayType: Drone
+  SelectColor: {r: 0.43867922, g: 1, b: 0.8266659, a: 1}
 --- !u!114 &5720193846554773453
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -201,3 +185,37 @@ MonoBehaviour:
   Inventory:
     MaxCargoVolume: 100
     Cargo: []
+--- !u!114 &804054460703398686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878582747517346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2fc5f72b47126fd41885251900ac5300, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TaskTypes:
+  - Action: 3
+    DisplayName: Move Here
+  - Action: 4
+    DisplayName: Drill Here
+--- !u!114 &6486274195425777466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878582747517346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5dd3673aa47c7084d9f60594824209c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BuildingTypes:
+  - Building: 1
+    DisplayName: Mining Drill
+  - Building: 2
+    DisplayName: Refinery

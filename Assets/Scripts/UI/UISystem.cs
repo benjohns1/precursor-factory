@@ -1,12 +1,11 @@
-﻿using Behavior;
-using GameEvents;
+﻿using GameEvents;
 using GameEvents.Actions;
 using GameEvents.UI;
-using System;
 using System.Collections.Generic;
 using System.Linq;
+using UnitTask;
 using UnityEngine;
-using UnityEngine.UI;
+using UI.UnitTask;
 
 namespace UI
 {
@@ -27,7 +26,7 @@ namespace UI
         {
             Settings = settings;
 
-            ContextMenu = UnityEngine.Object.Instantiate(Settings.ContextMenuPrefab, Settings.Canvas).GetComponent<ContextMenuComponent>();
+            ContextMenu = Object.Instantiate(Settings.ContextMenuPrefab, Settings.Canvas).GetComponent<ContextMenuComponent>();
             ContextMenu.gameObject.SetActive(false);
 
             GameManager.EventSystem.Subscribe(typeof(InputActionRequested), HandleInputEvent);
@@ -80,11 +79,18 @@ namespace UI
             public TaskType Type = null;
         }
 
+        private class BuildData
+        {
+            public int Count = 1;
+            public BuildingType Type = null;
+        }
+
         private class ContextData
         {
             public string Display = null;
             public int Count = 0;
             public List<TaskData> Tasks = new List<TaskData>();
+            public List<BuildData> Buildings = new List<BuildData>();
 
             public void AddTask(TaskType type)
             {
@@ -100,6 +106,21 @@ namespace UI
                     });
                 }
             }
+
+            public void AddBuilding(BuildingType type)
+            {
+                if (Buildings.Any(c => c.Type.Building == type.Building && c.Type.DisplayName == type.DisplayName))
+                {
+                    Buildings.First(c => c.Type.Building == type.Building && c.Type.DisplayName == type.DisplayName).Count++;
+                }
+                else
+                {
+                    Buildings.Add(new BuildData
+                    {
+                        Type = type
+                    });
+                }
+            }
         }
 
         private void ShowContextMenu(List<SelectableComponent> selections, Vector2 position, bool multi)
@@ -109,14 +130,25 @@ namespace UI
 
             ContextData context = GetContextData(selections, position);
             ContextMenu.Title.text = context.Display + (context.Count > 1 ? " (" + context.Count + ")" : "");
-            ClearTaskList();
+            ClearActionList();
+
             foreach (TaskData task in context.Tasks)
             {
-                ContextMenuItemComponent menuItem = UnityEngine.Object.Instantiate(Settings.ContextMenuItemPrefab, ContextMenu.Tasks.transform).GetComponent<ContextMenuItemComponent>();
+                ContextMenuItemComponent menuItem = Object.Instantiate(Settings.ContextMenuItemPrefab, ContextMenu.Actions.transform).GetComponent<ContextMenuItemComponent>();
                 menuItem.Text.text = task.Type.DisplayName + (task.Count != context.Count ? " (" + task.Count + ")" : "");
                 menuItem.Button.onClick.AddListener(() =>
                 {
                     GameManager.EventSystem.Publish(new InputActionRequested(position, task.Type.Action, multi));
+                    HideContextMenu();
+                });
+            }
+            foreach (BuildData building in context.Buildings)
+            {
+                ContextMenuItemComponent menuItem = Object.Instantiate(Settings.ContextMenuItemPrefab, ContextMenu.Actions.transform).GetComponent<ContextMenuItemComponent>();
+                menuItem.Text.text = "Build " + building.Type.DisplayName + (building.Count != context.Count ? " (" + building.Count + ")" : "");
+                menuItem.Button.onClick.AddListener(() =>
+                {
+                    GameManager.EventSystem.Publish(new BuildActionRequested(position, building.Type.Building, multi));
                     HideContextMenu();
                 });
             }
@@ -132,8 +164,7 @@ namespace UI
             string displayType = null;
             foreach (SelectableComponent selection in selections)
             {
-                BehaviorComponent behavior = selection.GetComponent<BehaviorComponent>();
-                if (behavior == null)
+                if (selection == null)
                 {
                     continue;
                 }
@@ -143,10 +174,10 @@ namespace UI
                 {
                     if (context.Display == null)
                     {
-                        context.Display = behavior.DisplayName;
-                        displayType = behavior.DisplayType;
+                        context.Display = selection.DisplayName;
+                        displayType = selection.DisplayType;
                     }
-                    else if (context.Display != behavior.DisplayName)
+                    else if (context.Display != selection.DisplayName)
                     {
                         name = false;
                     }
@@ -154,7 +185,7 @@ namespace UI
 
                 if (!name && type)
                 {
-                    if (displayType == behavior.DisplayType)
+                    if (displayType == selection.DisplayType)
                     {
                         context.Display = displayType;
                     }
@@ -169,9 +200,16 @@ namespace UI
                     context.Display = null;
                 }
 
-                foreach (TaskType task in behavior.GetTasks(mousePosition))
+                AvailableTasksComponent availableTasks = selection.GetComponent<AvailableTasksComponent>();
+                foreach (TaskType task in availableTasks.GetTasks(mousePosition))
                 {
                     context.AddTask(task);
+                }
+
+                AvailableBuildingsComponent availableBuildings = selection.GetComponent<AvailableBuildingsComponent>();
+                foreach (BuildingType building in availableBuildings.GetBuildings(mousePosition))
+                {
+                    context.AddBuilding(building);
                 }
             }
 
@@ -181,15 +219,15 @@ namespace UI
         private void HideContextMenu()
         {
             ContextMenu.gameObject.SetActive(false);
-            ClearTaskList();
+            ClearActionList();
             GameManager.EventSystem.Publish(new MouseReleased());
         }
 
-        private void ClearTaskList()
+        private void ClearActionList()
         {
-            foreach (Transform child in ContextMenu.Tasks.transform)
+            foreach (Transform child in ContextMenu.Actions.transform)
             {
-                UnityEngine.Object.Destroy(child.gameObject);
+                Object.Destroy(child.gameObject);
             }
         }
     }

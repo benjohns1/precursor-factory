@@ -25,26 +25,49 @@ namespace UnitTask
             TaskQueueComponent = queueComponent;
         }
 
-        internal void HandleAction(InputActionRequested inputEvent)
+        internal void ProcessInputAction(InputActionRequested inputEvent)
         {
+            if (!inputEvent.MultiModifier)
+            {
+                Queue.Clear();
+                CancelCurrent();
+            }
             switch (inputEvent.Action)
             {
                 case InputActionRequested.ActionType.MoveToPosition:
-                    if (!inputEvent.MultiModifier)
-                    {
-                        Queue.Clear();
-                        CancelCurrent();
-                    }
                     Queue.Enqueue(new MoveToPosition(this, Camera.main.ScreenToWorldPoint(inputEvent.Position)));
                     break;
                 case InputActionRequested.ActionType.Drill:
-                    if (!inputEvent.MultiModifier)
-                    {
-                        Queue.Clear();
-                        CancelCurrent();
-                    }
                     Queue.Enqueue(new MoveToPosition(this, Camera.main.ScreenToWorldPoint(inputEvent.Position)));
                     Queue.Enqueue(new Manufacture.Drill(this));
+                    break;
+            }
+        }
+
+        internal void ProcessBuildAction(BuildActionRequested buildEvent)
+        {
+            if (!buildEvent.MultiModifier)
+            {
+                Queue.Clear();
+                CancelCurrent();
+            }
+
+            Queue.Enqueue(new MoveToPosition(this, Camera.main.ScreenToWorldPoint(buildEvent.Position)));
+
+            switch (buildEvent.Building)
+            {
+                case BuildActionRequested.BuildingType.Drill:
+                    // @TODO: create global build job/ghost and associate drone task to it (build system captures build request first, then fires another event afterwards on success?)
+                    Queue.Enqueue(new Build.Drill(this));
+                    Debug.Log("Enqueued build task for drone, @TODO: build system");
+                    break;
+                case BuildActionRequested.BuildingType.Refinery:
+                    // @TODO: create global build job/ghost and associate drone task to it (build system captures build request first, then fires another event afterwards on success?)
+                    Queue.Enqueue(new Build.Refinery(this));
+                    Debug.Log("Enqueued build task for drone, @TODO: build system");
+                    break;
+                default:
+                    Debug.LogWarning("Building " + buildEvent.Building.ToString() + " not handled");
                     break;
             }
         }

@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 7323645696422502976}
   - component: {fileID: 6100963292540080513}
   m_Layer: 5
-  m_Name: AvailableTasks
+  m_Name: Actions
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -289,7 +289,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Title: {fileID: 1878654631224170433}
-  Tasks: {fileID: 6100963292540080513}
+  Actions: {fileID: 6100963292540080513}
 --- !u!114 &5366358064412378480
 MonoBehaviour:
   m_ObjectHideFlags: 0

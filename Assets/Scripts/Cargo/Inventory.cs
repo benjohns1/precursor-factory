@@ -3,7 +3,7 @@
 namespace Cargo
 {
     [System.Serializable]
-    class Inventory
+    public class Inventory
     {
         [SerializeField]
         private int MaxCargoVolume = 100;
