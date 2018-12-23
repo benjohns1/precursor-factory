@@ -4,7 +4,7 @@ namespace GameEvents.Actions
 {
     public class InputActionRequested : IEvent
     {
-        public enum ActionType { ChooseAction, SelectAtPosition, MoveToPosition, Drill }
+        public enum ActionType { None, ChooseAction, SelectAtPosition, MoveToPosition, Drill }
 
         public Vector2 Position { get; protected set; }
         public ActionType Action { get; protected set; }

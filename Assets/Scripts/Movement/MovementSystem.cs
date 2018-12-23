@@ -1,8 +1,9 @@
 ﻿using GameEvents;
-using GameEvents.UnitCommand;
+using GameEvents.UnitTask;
+using Movement.Trajectory;
 using System.Collections.Generic;
-using UnitCommand;
-using UnitCommand.Movement;
+using UnitTask;
+using UnitTask.Movement;
 using UnityEngine;
 using static Movement.Trajectory2D;
 
@@ -13,12 +14,12 @@ namespace Movement
         internal class Mover
         {
             public Trajectory2D Trajectory;
-            public ICommand InitialCommand;
+            public ITask InitialTask;
 
-            public Mover(Trajectory2D trajectory, ICommand initialCommand = null)
+            public Mover(Trajectory2D trajectory, ITask initialTask = null)
             {
                 Trajectory = trajectory;
-                InitialCommand = initialCommand;
+                InitialTask = initialTask;
             }
         }
 
@@ -26,7 +27,7 @@ namespace Movement
 
         public MovementSystem()
         {
-            GameManager.EventSystem.Subscribe(typeof(UnitCommandEvent), HandleMoveToPosition);
+            GameManager.EventSystem.Subscribe(typeof(UnitTaskEvent), HandleUnitTaskEvent);
         }
 
         public void Register(MovementComponent mover)
@@ -45,28 +46,23 @@ namespace Movement
             }
         }
 
-        private void HandleMoveToPosition(IEvent @event)
+        private void HandleUnitTaskEvent(IEvent @event)
         {
-            if (!(@event is UnitCommandEvent))
+            UnitTaskEvent taskEvent = @event as UnitTaskEvent;
+            if (taskEvent.Task is MoveToPosition)
             {
-                return;
-            }
-
-            UnitCommandEvent commandEvent = @event as UnitCommandEvent;
-            if (commandEvent.Command is MoveToPosition)
-            {
-                MoveToPosition moveToPosition = commandEvent.Command as MoveToPosition;
+                MoveToPosition moveToPosition = taskEvent.Task as MoveToPosition;
                 MovementComponent movementComponent = GetMovementComponent(moveToPosition);
                 if (movementComponent == null)
                 {
                     return;
                 }
 
-                if (@event is UnitCommandStarted)
+                if (@event is UnitTaskStarted)
                 {
                     MoveToPosition(movementComponent, moveToPosition);
                 }
-                else if (@event is UnitCommandCancelled)
+                else if (@event is UnitTaskCancelled)
                 {
                     Drift(movementComponent);
                 }
@@ -116,10 +112,10 @@ namespace Movement
 
         private MovementComponent GetMovementComponent(MoveToPosition moveToPosition)
         {
-            MovementComponent movementComponent = moveToPosition.CommandQueue.CommandQueueComponent.GetComponent<MovementComponent>();
+            MovementComponent movementComponent = moveToPosition.TaskQueue.TaskQueueComponent.GetComponent<MovementComponent>();
             if (!movers.ContainsKey(movementComponent))
             {
-                Debug.LogWarning("MovementComponent " + movementComponent.name + " is not registered with MovementSystem");
+                Debug.LogWarning(typeof(MovementComponent).ToString() + " " + movementComponent.name + " is not registered with " + this.GetType().ToString());
                 return null;
             }
             return movementComponent;
@@ -139,7 +135,7 @@ namespace Movement
             // Default to drifting when any trajectories are completed
             foreach (KeyValuePair<MovementComponent, Mover> mover in trajectoryComplete)
             {
-                GameManager.EventSystem.Publish(new UnitCommandCompleted(mover.Value.InitialCommand));
+                GameManager.EventSystem.Publish(new UnitTaskCompleted(mover.Value.InitialTask));
                 Drift(mover.Key);
             }
         }

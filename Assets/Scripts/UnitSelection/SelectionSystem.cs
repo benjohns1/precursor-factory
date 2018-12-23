@@ -44,7 +44,7 @@ namespace UnitSelection
         {
             Vector2 worldPosition = Camera.main.ScreenToWorldPoint(position);
             SelectableComponent selection = Physics2D.Raycast(worldPosition, Vector2.zero).transform?.gameObject.GetComponent<SelectableComponent>();
-            Selections.HandleSelection(selection, multi);
+            Selections.UpdateSelections(selection, multi);
         }
     }
 }

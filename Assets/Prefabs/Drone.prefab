@@ -15,6 +15,8 @@ GameObject:
   - component: {fileID: 60976933383723534}
   - component: {fileID: 114285118906091860}
   - component: {fileID: 1585314245692915307}
+  - component: {fileID: 5720193846554773453}
+  - component: {fileID: 2885760156889011600}
   m_Layer: 0
   m_Name: Drone
   m_TagString: Untagged
@@ -164,9 +166,38 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2fbfe70f9d33cfb48a4f06402796c332, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CommandTypes:
-  - Action: 2
-    DisplayName: Move to Position
+  TaskTypes:
   - Action: 3
+    DisplayName: Move to Position
+  - Action: 4
     DisplayName: Drill
+  CargoAmounts: []
   DroneName: 
+--- !u!114 &5720193846554773453
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878582747517346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1dcfa350c20e14c479b1a6c6e810d25b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DrillOrePerHour: 360
+--- !u!114 &2885760156889011600
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878582747517346}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 641d476c5b0b64e4092b1da6524fcaea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Inventory:
+    MaxCargoVolume: 100
+    Cargo: []

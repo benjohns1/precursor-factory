@@ -1,38 +1,40 @@
 ﻿using GameEvents.Actions;
 using System.Collections.Generic;
 using System.Linq;
+using UnitTask.Manufacture;
 using UnityEngine;
 
 namespace Behavior
 {
     class DroneComponent : BehaviorComponent
     {
-        public string DroneName;
+        public string DroneName = null;
 
         public override string DisplayName => string.IsNullOrWhiteSpace(DroneName) ? "Drone" : DroneName;
         public override string DisplayType => "Drone";
 
-        public override CommandType[] GetCommands(Vector2 mousePosition)
+        public override int MaxCargoVolume => 10;
+
+        public override TaskType[] GetTasks(Vector2 mousePosition)
         {
-            List<CommandType> commands = new List<CommandType>();
-            foreach (CommandType command in CommandTypes)
+            List<TaskType> tasks = new List<TaskType>();
+            foreach (TaskType task in TaskTypes)
             {
-                switch (command.Action)
+                switch (task.Action)
                 {
                     case InputActionRequested.ActionType.Drill:
-                        Ray ray = Camera.main.ScreenPointToRay(mousePosition);
-                        bool found = Physics.RaycastAll(ray, Mathf.Infinity).Any(h => h.transform?.gameObject.GetComponent<AsteroidComponent>() != null);
+                        bool found = Drill.GetDrillableAsteroid(Camera.main.ScreenToWorldPoint(mousePosition)) != default(AsteroidComponent);
                         if (found)
                         {
-                            commands.Add(command);
+                            tasks.Add(task);
                         }
                         break;
                     default:
-                        commands.Add(command);
+                        tasks.Add(task);
                         break;
                 }
             }
-            return commands.ToArray();
+            return tasks.ToArray();
         }
     }
 }

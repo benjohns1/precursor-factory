@@ -4,5 +4,5 @@ using UnityEngine.UI;
 public class ContextMenuComponent : MonoBehaviour
 {
     public Text Title;
-    public VerticalLayoutGroup Commands;
+    public VerticalLayoutGroup Tasks;
 }

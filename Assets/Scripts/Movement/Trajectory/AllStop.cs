@@ -1,7 +1,6 @@
-﻿using Movement.Trajectory;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Movement
+namespace Movement.Trajectory
 {
     class AllStop : Trajectory2D
     {

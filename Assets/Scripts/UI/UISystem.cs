@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace UI
 {
@@ -73,27 +74,27 @@ namespace UI
             }
         }
 
-        private class CommandData
+        private class TaskData
         {
             public int Count = 1;
-            public CommandType Type = null;
+            public TaskType Type = null;
         }
 
         private class ContextData
         {
             public string Display = null;
             public int Count = 0;
-            public List<CommandData> Commands = new List<CommandData>();
+            public List<TaskData> Tasks = new List<TaskData>();
 
-            public void AddCommand(CommandType type)
+            public void AddTask(TaskType type)
             {
-                if (Commands.Any(c => c.Type.Action == type.Action && c.Type.DisplayName == type.DisplayName))
+                if (Tasks.Any(c => c.Type.Action == type.Action && c.Type.DisplayName == type.DisplayName))
                 {
-                    Commands.First(c => c.Type.Action == type.Action && c.Type.DisplayName == type.DisplayName).Count++;
+                    Tasks.First(c => c.Type.Action == type.Action && c.Type.DisplayName == type.DisplayName).Count++;
                 }
                 else
                 {
-                    Commands.Add(new CommandData
+                    Tasks.Add(new TaskData
                     {
                         Type = type
                     });
@@ -108,14 +109,14 @@ namespace UI
 
             ContextData context = GetContextData(selections, position);
             ContextMenu.Title.text = context.Display + (context.Count > 1 ? " (" + context.Count + ")" : "");
-            ClearCommandList();
-            foreach (CommandData command in context.Commands)
+            ClearTaskList();
+            foreach (TaskData task in context.Tasks)
             {
-                ContextMenuItemComponent menuItem = UnityEngine.Object.Instantiate(Settings.ContextMenuItemPrefab, ContextMenu.Commands.transform).GetComponent<ContextMenuItemComponent>();
-                menuItem.Text.text = command.Type.DisplayName + (command.Count != context.Count ? " (" + command.Count + ")" : "");
+                ContextMenuItemComponent menuItem = UnityEngine.Object.Instantiate(Settings.ContextMenuItemPrefab, ContextMenu.Tasks.transform).GetComponent<ContextMenuItemComponent>();
+                menuItem.Text.text = task.Type.DisplayName + (task.Count != context.Count ? " (" + task.Count + ")" : "");
                 menuItem.Button.onClick.AddListener(() =>
                 {
-                    GameManager.EventSystem.Publish(new InputActionRequested(position, command.Type.Action, multi));
+                    GameManager.EventSystem.Publish(new InputActionRequested(position, task.Type.Action, multi));
                     HideContextMenu();
                 });
             }
@@ -168,9 +169,9 @@ namespace UI
                     context.Display = null;
                 }
 
-                foreach (CommandType command in behavior.GetCommands(mousePosition))
+                foreach (TaskType task in behavior.GetTasks(mousePosition))
                 {
-                    context.AddCommand(command);
+                    context.AddTask(task);
                 }
             }
 
@@ -180,13 +181,13 @@ namespace UI
         private void HideContextMenu()
         {
             ContextMenu.gameObject.SetActive(false);
-            ClearCommandList();
+            ClearTaskList();
             GameManager.EventSystem.Publish(new MouseReleased());
         }
 
-        private void ClearCommandList()
+        private void ClearTaskList()
         {
-            foreach (Transform child in ContextMenu.Commands.transform)
+            foreach (Transform child in ContextMenu.Tasks.transform)
             {
                 UnityEngine.Object.Destroy(child.gameObject);
             }

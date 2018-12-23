@@ -8,7 +8,7 @@ namespace UnitSelection
     {
         private readonly List<SelectableComponent> Selected = new List<SelectableComponent>();
 
-        public void HandleSelection(SelectableComponent selection, bool multi)
+        public void UpdateSelections(SelectableComponent selection, bool multi)
         {
             if (IsSelected(selection) && (Selected.Count == 1 || multi))
             {

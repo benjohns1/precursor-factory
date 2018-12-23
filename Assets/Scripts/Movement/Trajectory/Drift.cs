@@ -1,7 +1,6 @@
-﻿using Movement.Trajectory;
-using UnityEngine;
+﻿using UnityEngine;
 
-namespace Movement
+namespace Movement.Trajectory
 {
     class Drift : Trajectory2D
     {

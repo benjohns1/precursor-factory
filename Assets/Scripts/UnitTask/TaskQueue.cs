@@ -1,28 +1,28 @@
 ﻿using GameEvents.Actions;
-using GameEvents.UnitCommand;
+using GameEvents.UnitTask;
 using System;
 using System.Collections.Generic;
-using UnitCommand.Movement;
+using UnitTask.Movement;
 using UnityEngine;
 
-namespace UnitCommand
+namespace UnitTask
 {
     [RequireComponent(typeof(SelectableComponent))]
-    public class CommandQueue
+    public class TaskQueue
     {
-        protected Queue<ICommand> Queue = new Queue<ICommand>();
+        protected Queue<ITask> Queue = new Queue<ITask>();
 
-        internal ICommand Current { get; private set; }
+        internal ITask Current { get; private set; }
         internal SelectableComponent SelectableComponent;
 
-        internal CommandQueueComponent CommandQueueComponent;
+        internal TaskQueueComponent TaskQueueComponent;
 
         internal bool Selected = false;
 
-        public CommandQueue(SelectableComponent selectable, CommandQueueComponent queueComponent)
+        public TaskQueue(SelectableComponent selectable, TaskQueueComponent queueComponent)
         {
             SelectableComponent = selectable;
-            CommandQueueComponent = queueComponent;
+            TaskQueueComponent = queueComponent;
         }
 
         internal void HandleAction(InputActionRequested inputEvent)
@@ -44,17 +44,17 @@ namespace UnitCommand
                         CancelCurrent();
                     }
                     Queue.Enqueue(new MoveToPosition(this, Camera.main.ScreenToWorldPoint(inputEvent.Position)));
-                    Queue.Enqueue(new Drill.Drill(this));
+                    Queue.Enqueue(new Manufacture.Drill(this));
                     break;
             }
         }
 
-        internal void FinishCurrentCommand()
+        internal void FinishCurrent()
         {
             Current = null;
         }
 
-        internal void RunCurrentCommand()
+        internal void RunCurrent()
         {
             try
             {
@@ -65,7 +65,7 @@ namespace UnitCommand
                         return;
                     }
                     Current = Queue.Dequeue();
-                    GameManager.EventSystem.Publish(new UnitCommandStarted(Current));
+                    GameManager.EventSystem.Publish(new UnitTaskStarted(Current));
                 }
             }
             catch (Exception ex)
@@ -79,7 +79,7 @@ namespace UnitCommand
         {
             if (Current != null)
             {
-                GameManager.EventSystem.Publish(new UnitCommandCancelled(Current));
+                GameManager.EventSystem.Publish(new UnitTaskCancelled(Current));
                 Current = null;
             }
         }

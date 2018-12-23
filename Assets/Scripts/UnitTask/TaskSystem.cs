@@ -1,42 +1,40 @@
 ﻿using GameEvents;
 using GameEvents.Actions;
-using GameEvents.UI;
-using GameEvents.UnitCommand;
 using GameEvents.UnitSelection;
-using System;
+using GameEvents.UnitTask;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace UnitCommand
+namespace UnitTask
 {
-    public class CommandSystem
+    public class TaskSystem
     {
-        List<CommandQueue> queues = new List<CommandQueue>();
+        List<TaskQueue> queues = new List<TaskQueue>();
 
-        public CommandSystem()
+        public TaskSystem()
         {
             GameManager.EventSystem.Subscribe(typeof(InputActionRequested), HandleInputEvent);
             GameManager.EventSystem.Subscribe(typeof(UnitSelectionChanged), HandleSelectionEvent);
-            GameManager.EventSystem.Subscribe(typeof(UnitCommandCompleted), HandleCompletedEvent);
+            GameManager.EventSystem.Subscribe(typeof(UnitTaskCompleted), HandleCompletedEvent);
         }
 
         private void HandleCompletedEvent(IEvent @event)
         {
-            UnitCommandCompleted completedEvent = @event as UnitCommandCompleted;
-            CommandQueue completedQueue = queues.First(queue => queue.Current == completedEvent.Command);
-            if (completedQueue == null)
+            UnitTaskCompleted completedEvent = @event as UnitTaskCompleted;
+            TaskQueue completedQueue = queues.FirstOrDefault(queue => queue.Current == completedEvent.Task);
+            if (completedQueue == default(TaskQueue))
             {
-                Debug.LogWarning("No matching CommandQueue when processing UnitCommandComleted");
+                Debug.LogWarning("No matching " + typeof(TaskQueue).ToString() + " when processing " + typeof(UnitTaskCompleted).ToString());
                 return;
             }
-            completedQueue.FinishCurrentCommand();
+            completedQueue.FinishCurrent();
         }
 
         private void HandleSelectionEvent(IEvent @event)
         {
             List<SelectableComponent> selections = GameManager.SelectionSystem.GetSelections();
-            foreach (CommandQueue queue in queues)
+            foreach (TaskQueue queue in queues)
             {
                 if (selections.Contains(queue.SelectableComponent))
                 {
@@ -57,13 +55,13 @@ namespace UnitCommand
             InputActionRequested inputEvent = @event as InputActionRequested;
 
             List<SelectableComponent> selections = GameManager.SelectionSystem.GetSelections();
-            foreach (CommandQueue queue in queues.Where(queue => selections.Contains(queue.SelectableComponent)))
+            foreach (TaskQueue queue in queues.Where(queue => selections.Contains(queue.SelectableComponent)))
             {
                 queue.HandleAction(inputEvent);
             }
         }
 
-        public void Register(CommandQueue queue)
+        public void Register(TaskQueue queue)
         {
             if (!queues.Contains(queue))
             {
@@ -71,7 +69,7 @@ namespace UnitCommand
             }
         }
 
-        public void Unregister(CommandQueue queue)
+        public void Unregister(TaskQueue queue)
         {
             if (queues.Contains(queue))
             {
@@ -81,9 +79,9 @@ namespace UnitCommand
 
         public void Update()
         {
-            foreach (CommandQueue queue in queues)
+            foreach (TaskQueue queue in queues)
             {
-                queue.RunCurrentCommand();
+                queue.RunCurrent();
             }
         }
     }
